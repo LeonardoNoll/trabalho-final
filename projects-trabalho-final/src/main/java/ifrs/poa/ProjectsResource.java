@@ -3,12 +3,12 @@ package ifrs.poa;
 import java.net.URI;
 import java.util.List;
 
-import com.arjuna.ats.internal.jdbc.drivers.modifiers.extensions;
-
 import ifrs.poa.model.Project;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -25,6 +25,7 @@ public class ProjectsResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @WithTransaction
+    @RolesAllowed("User")
     public Uni<Response> list() {
         return Project.<Project>findAll().list()
                 .map(list -> Response.ok(list).build());
@@ -34,6 +35,8 @@ public class ProjectsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @WithTransaction
+    @RolesAllowed("User")
+    // @PermitAll
     public Uni<Response> create(Project project) {
         return project.persistAndFlush()
                 .map(v -> {
@@ -49,6 +52,7 @@ public class ProjectsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @WithTransaction
+    @RolesAllowed("User")
     public Uni<Response> update(@PathParam("id") Long id, Project payload) {
         return Project.<Project>findById(id)
                 .flatMap(existing -> {
@@ -68,6 +72,7 @@ public class ProjectsResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @WithTransaction
+    @RolesAllowed("User")
     public Uni<Response> delete(@PathParam("id") Long id) {
         return Project.<Project>findById(id)
                 .flatMap(existing -> {
@@ -83,6 +88,7 @@ public class ProjectsResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @WithTransaction
+    @RolesAllowed("User")
     public Uni<Response> getProjectById(@PathParam("id") Long id) {
         return Project.<Project>findById(id)
                 .flatMap(p -> Uni.createFrom().item(Response.ok(p).build()));

@@ -7,6 +7,8 @@ import ifrs.poa.models.Project;
 import ifrs.poa.models.Status;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
@@ -29,14 +31,18 @@ public class ManagerResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("User")
     @WithTransaction
     public Uni<Response> list() {
+
         return projectsClient.list();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("User")
+    // @PermitAll
     @WithTransaction
     public Uni<Response> create(
             @FormParam("name") String name,
